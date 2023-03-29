@@ -16,7 +16,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'news-parser': {
         'task': 'blog.tasks.quotes_parser',
-        'schedule': crontab()
-        # 'schedule': crontab(hour='*/6')
+        'schedule': crontab(),
+        # 'schedule': crontab(minute=0, hour='1-23/2')
     },
 }
