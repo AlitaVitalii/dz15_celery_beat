@@ -16,4 +16,4 @@ class Quote(models.Model):
     quote = models.TextField()
 
     def __str__(self):
-        return self.quote[:15]
+        return self.quote
