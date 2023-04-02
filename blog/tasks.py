@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from celery import shared_task
+from django.core.mail import send_mail
 
 from blog.models import Author, Quote
 
@@ -8,20 +9,14 @@ from blog.models import Author, Quote
 @shared_task()
 def quotes_parser():
     r = requests.get("https://quotes.toscrape.com/")
-    page = 1
     quote_list = []
     author_list = []
-    while True:
 
-        # quote_list = []
-        # author_list = []
+    while True:
         if r.status_code == 200:
             soup_nav = BeautifulSoup(r.text, 'html.parser').find_all('li', {'class': 'next'})
             soup = BeautifulSoup(r.text, 'html.parser').find_all('div', {'class', 'quote'})  # soup_about[0].find('a').get('href')
-            if not soup_nav:
-                print('больше нет цитат')
-                break
-            r = requests.get(f"https://quotes.toscrape.com{soup_nav[0].find('a').get('href')}")
+
             for i in range(len(soup)):
                 author = Author.objects.filter(name=soup[i].find('small', {'class': 'author'}).text)
                 if author:
@@ -33,19 +28,28 @@ def quotes_parser():
                         name=soup[i].find('small', {'class': 'author'}).text,
                         about=soup_author[0].text,
                     )
-                print(author)
 
                 quote = Quote.objects.filter(quote=soup[i].find('span', {'class': 'text'}).text)
                 if not quote:
                     quote_list.append(soup[i].find('span', {'class': 'text'}).text)
                     author_list.append(author)
-                if len(quote_list) == 20:
+
+                if len(quote_list) == 5:
                     break
-        if len(quote_list) < 20:
-            page += 1
-        print("len", len(quote_list))
-        print("page", page)
-        if len(quote_list) == 20:
+
+            if not soup_nav:
+                if len(quote_list) < 5:
+                    send_mail(
+                        'Quote',
+                        'Новых цитат больше нет',
+                        ['admin@mail.com'],
+                        ["support@example.com"],
+                        fail_silently=False,
+                    )
+                break
+            r = requests.get(f"https://quotes.toscrape.com{soup_nav[0].find('a').get('href')}")
+
+        if len(quote_list) == 5:
             break
 
     Quote.objects.bulk_create([Quote(
