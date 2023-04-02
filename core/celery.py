@@ -9,14 +9,10 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 app.autodiscover_tasks()
 
 
-# @app.task(bind=True)
-# def debug_task(self):
-#     print(f'Request: {self.request!r}')
-
 app.conf.beat_schedule = {
     'news-parser': {
         'task': 'blog.tasks.quotes_parser',
-        'schedule': crontab(),
-        # 'schedule': crontab(minute=0, hour='1-23/2')
+        # 'schedule': crontab(),
+        'schedule': crontab(minute=0, hour='1-23/2')
     },
 }

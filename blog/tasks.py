@@ -15,12 +15,10 @@ def quotes_parser():
     while True:
         if r.status_code == 200:
             soup_nav = BeautifulSoup(r.text, 'html.parser').find_all('li', {'class': 'next'})
-            soup = BeautifulSoup(r.text, 'html.parser').find_all('div', {'class', 'quote'})  # soup_about[0].find('a').get('href')
+            soup = BeautifulSoup(r.text, 'html.parser').find_all('div', {'class', 'quote'})
 
             for i in range(len(soup)):
-                author = Author.objects.filter(name=soup[i].find('small', {'class': 'author'}).text)
-                if author:
-                    author = Author.objects.get(name=soup[i].find('small', {'class': 'author'}).text)
+                author = Author.objects.filter(name=soup[i].find('small', {'class': 'author'}).text).first()
                 if not author:
                     a = requests.get(f"https://quotes.toscrape.com/{soup[i].find('a').get('href')}")
                     soup_author = BeautifulSoup(a.text, 'html.parser').find_all('div', {'class': 'author-description'})

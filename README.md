@@ -1,9 +1,22 @@
 # dz15_celery_beat
 
 
- celery -A core worker --loglevel=INFO
+
+```bash
+    ./manage.py migrate
+```
 
 
-celery -A core beat -l INFO
+```bash
+    celery -A core worker --loglevel=INFO
+```
+
+
+
+```bash
+    celery -A core beat -l INFO
+```
+
+
 
 
