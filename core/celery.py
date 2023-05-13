@@ -11,8 +11,9 @@ app.autodiscover_tasks()
 
 app.conf.beat_schedule = {
     'news-parser': {
-        'task': 'blog.tasks.quotes_parser',
+        'task': 'myip.tasks.ip_parser',
         # 'schedule': crontab(),
-        'schedule': crontab(minute=0, hour='1-23/2')
+        'schedule': crontab(minute=0, hour='*/6')  # каждые 6 часов
+        # 'schedule': crontab(minute=0, hour='1-23/2')  # каждый нечетный час
     },
 }

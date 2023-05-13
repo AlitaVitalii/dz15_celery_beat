@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django_celery_results',
 
     'blog',
+    'myip',
 ]
 
 MIDDLEWARE = [
@@ -130,7 +131,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 CELERY_BROKER_URL = 'amqp://localhost'
@@ -146,3 +147,12 @@ CACHES = {
         'LOCATION': 'my_cache_table',
     }
 }
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.ukr.net'
+EMAIL_PORT = 465
+# EMAIL_PORT = 2525
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = os.getenv('EMAIL')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
